@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+  
+<body>
+<video id="video" width="0" height = "0"></video>
+
+  <canvas id="canvas1"></canvas>
+  <canvas id="canvas2"></canvas>
+
+   <script language="javascript" type="text/javascript">
+  
+  // the simplest possible script to say which pixel is brighest using pixels from a live webcam.
+ let width = 400;
+ let height = 300;
+     
+ let canvas = document.getElementById("canvas1");
+  
+ let context = canvas.getContext('2d');
+ let canvas2 = document.getElementById('canvas2');
+ let context2 = canvas2.getContext('2d'); 
+     
+ canvas.addEventListener('mousemove', getMouse, false);
+
+     // This sets the width and height to the document window
+canvas.width = width;
+canvas.height = height;
+canvas2.width = width;
+canvas2.height = height;
+  
+     // Grab elements, create settings, etc.
+let video = document.getElementById('video');
+
+//video.style.visibility="hidden";
+
+navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+	video.srcObject = stream;
+	video.play();
+});
+     
+var imageData = 0;
+var resultData = 0;
+     
+function draw() {
+
+ 
+  context2.drawImage(video,0,0,canvas.width,canvas.height);
+  
+  imageData = context2.getImageData(0,0,canvas.width, canvas.height);
+  resultData = context.getImageData(0,0,canvas.width,canvas.height);
+  
+
+     
+// iterate over all pixels
+for(var i = 0; i < canvas.height; i++) {
+    // loop through each row
+	for(var j = 0; j < canvas.width; j++) {
+             
+      		let position = ((canvas.width * i) + j) * 4;
+      		let r = imageData.data[position];
+            let g = imageData.data[position+1];
+            let b = imageData.data[position+2];
+      
+      //rgb2luma
+      let greyscale = 0.2126*r + 0.7152*g + 0.0722*b;
+      
+		resultData.data[position]=greyscale;     
+		resultData.data[position+1]=greyscale;
+     	resultData.data[position+2]=greyscale;  
+		resultData.data[position+3]=255;//alpha  
+
+    }
+}
+
+  
+	context.putImageData(resultData,0,0); 
+	requestAnimationFrame(draw); 
+  
+}
+
+//setInterval(draw,1000);
+requestAnimationFrame(draw);
+
+function getMouse(mousePosition) {
+    mouseX = mousePosition.layerX;
+    mouseY = mousePosition.layerY;
+}
+</script>
+</body>
+</html>
