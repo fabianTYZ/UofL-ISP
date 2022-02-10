@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <!-- The Canvas tag sets up a screen in the browser that we can draw to. -->
+    <canvas></canvas>
+    <script>
+        // This gets a reference to the canvas element
+        var canvas = document.querySelector("canvas");
+// This creates a 2d drawing 'context' in your canvas
+        var context = canvas.getContext("2d");
+        // This sets the width and height to the document window
+        canvas.width = 640;
+        canvas.height = 480;  
+        //Create a new object called imageData that we can use to create some Image data 
+        var imageData = context.createImageData(canvas.width,canvas.height);
+      		
+function draw() {
+  
+ for (var y = 0; y < imageData.height; y++) {
+	for (var x = 0; x < imageData.width; x++) {
+
+		// set red, green, blue, and alpha:
+		let position=(x+y*imageData.width)*4;
+		imageData.data[position] = Math.random()*255;
+		imageData.data[position+1] = Math.random()*255;
+		imageData.data[position+2] = Math.random()*255;
+		imageData.data[position+3] = 255; // opaque alpha
+	}
+}
+
+context.putImageData(imageData, 0, 0); // at coords 0,0
+
+         requestAnimationFrame(draw);
+
+        }
+
+        //finally ask for a frame.
+		requestAnimationFrame(draw);
+        //the end.
+
+    </script>
+
+</body>
+
+</html>
