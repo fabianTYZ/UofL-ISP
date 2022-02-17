@@ -65,11 +65,11 @@ var draw = function() {
           // loop through each row
           for(var j = 0; j < width; j++) {
               
-            var x = Math.floor((Math.cos(theta) * j) - (Math.sin(theta) * i));
-            var y = Math.floor((Math.sin(theta) * j) + (Math.cos(theta) * i));
+            // var x = Math.floor((Math.cos(theta) * j) - (Math.sin(theta) * i));
+            // var y = Math.floor((Math.sin(theta) * j) + (Math.cos(theta) * i));
 
-// var x = Math.floor((Math.cos(theta)/zoomX) * (j-(offsetX+anchorX)) - (Math.sin(theta)/zoomX) * (i-(offsetY+anchorY)))+anchorX;
-// var y = Math.floor((Math.sin(theta)/zoomY) * (j-(offsetX+anchorX)) + (Math.cos(theta)/zoomY) * (i-(offsetY+anchorY)))+anchorY;
+var x = Math.floor((Math.cos(theta)/zoomX) * (j-(offsetX+anchorX)) - (Math.sin(theta)/zoomX) * (i-(offsetY+anchorY)))+anchorX;
+var y = Math.floor((Math.sin(theta)/zoomY) * (j-(offsetX+anchorX)) + (Math.cos(theta)/zoomY) * (i-(offsetY+anchorY)))+anchorY;
 
             
             imageData2.data[((width * i) + j) * 4] = data[((width * y) + x) * 4];
