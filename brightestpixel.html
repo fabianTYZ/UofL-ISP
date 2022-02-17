@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+  
+<body>
+<video id="video" width="0" height = "0"></video>
+
+  <canvas style="margin-top:0px;margin-left:0px;"></canvas>
+
+ 
+   <script language="javascript" type="text/javascript">
+  
+  // the simplest possible script to say which pixel is brighest using pixels from a live webcam.
+ let width = 640;
+ let height = 480;
+     
+ let canvas = document.querySelector("canvas");
+  
+ let context = canvas.getContext('2d');
+ canvas.addEventListener('mousemove', getMouse, false);
+
+     // This sets the width and height to the document window
+canvas.width = width;
+canvas.height = height;
+  
+     // Grab elements, create settings, etc.
+let video = document.getElementById('video');
+
+//video.style.visibility="hidden";
+
+navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+        //video.src = window.URL.createObjectURL(stream);
+	video.srcObject = stream;
+	video.play();
+});
+     
+var imageData = 0;
+
+function draw() {
+
+ 
+  context.drawImage(video,0,0,canvas.width,canvas.height);
+  
+  imageData = context.getImageData(0,0,canvas.width, canvas.height);
+  
+  let brightestPix = 0;
+  let x = 0;
+  let y = 0;
+     
+// iterate over all pixels
+for(var i = 0; i < canvas.height; i++) {
+    // loop through each row
+	for(var j = 0; j < canvas.width; j++) {
+             
+      		let r = imageData.data[((canvas.width * i) + j) * 4];
+            let g = imageData.data[((canvas.width * i) + j) * 4+1];
+            let b = imageData.data[((canvas.width * i) + j) * 4+2];
+
+      if (r+b+g > brightestPix) {
+       
+        brightestPix = r+b+g;
+        x=j;
+        y=i;
+
+      }
+    }
+}
+   
+ context.fillStyle = "rgb(255,0,0)";
+ context.fillRect(x,y,10,10);
+  
+ //requestAnimationFrame(draw); 
+  
+}
+     
+//requestAnimationFrame(draw);
+ setInterval(draw,40);
+
+function getMouse(mousePosition) {
+    mouseX = mousePosition.layerX;
+    mouseY = mousePosition.layerY;
+}
+</script>
+</body>
+</html>
