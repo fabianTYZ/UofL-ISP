@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  </head>
+  <body>
+<video id="video" width="0" height = "0"></video>
+
+    <canvas id="canvas1"></canvas>
+    <canvas id="canvas2"></canvas>
+    <script>
+      
+let width = 400;
+ let height = 300;
+ let mouseX = 1;
+ let mouseY =1;
+      let zoomX = 1.0;
+      let zoomY = 1.0;
+      let anchorX = 200;
+      let anchorY = 200;
+      let offsetX = 0;
+      let offsetY = 0;
+     
+ let canvas = document.getElementById("canvas1");
+  
+ let context = canvas.getContext('2d');
+ let canvas2 = document.getElementById('canvas2');
+ let context2 = canvas2.getContext('2d'); 
+     
+ canvas.addEventListener('mousemove', getMouse, false);
+
+     // This sets the width and height to the document window
+canvas.width = width;
+canvas.height = height;
+canvas2.width = width;
+canvas2.height = height;
+  
+     // Grab elements, create settings, etc.
+let video = document.getElementById('video');
+
+//video.style.visibility="hidden";
+
+navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+        //video.src = window.URL.createObjectURL(stream);
+	video.srcObject = stream;
+	video.play();
+});
+
+        var imageData2 = context.getImageData(0, 0, width, height);
+        //var imageData2 = imageData;
+      
+var draw = function() {
+        var theta = mouseX / width * Math.PI * 2;
+   context2.drawImage(video,0,0,canvas.width,canvas.height);
+        var imageData = context2.getImageData(0, 0, width, width);
+        var data = imageData.data;
+
+            // iterate over all pixels
+        for(var i = 0; i < height; i++) {
+          // loop through each row
+          for(var j = 0; j < width; j++) {
+              
+            var x = Math.floor((Math.cos(theta) * j) - (Math.sin(theta) * i));
+            var y = Math.floor((Math.sin(theta) * j) + (Math.cos(theta) * i));
+
+// var x = Math.floor((Math.cos(theta)/zoomX) * (j-(offsetX+anchorX)) - (Math.sin(theta)/zoomX) * (i-(offsetY+anchorY)))+anchorX;
+// var y = Math.floor((Math.sin(theta)/zoomY) * (j-(offsetX+anchorX)) + (Math.cos(theta)/zoomY) * (i-(offsetY+anchorY)))+anchorY;
+
+            
+            imageData2.data[((width * i) + j) * 4] = data[((width * y) + x) * 4];
+            imageData2.data[((width * i) + j) * 4+1] = data[((width * y) + x) * 4 + 1];
+            imageData2.data[((width * i) + j) * 4+2] = data[((width * y) + x) * 4 + 2];
+            imageData2.data[((width * i) + j) * 4+3] = data[((width * y) + x) * 4 + 3];
+            
+          }
+        }      
+          context.putImageData(imageData2,0,0);
+	requestAnimationFrame(draw);
+      };
+ 
+ 
+// setInterval(draw,500);      
+	requestAnimationFrame(draw);
+ 
+          function getMouse(mousePosition) {
+                mouseX = mousePosition.layerX;
+                mouseY = mousePosition.layerY;
+        }     
+
+    </script>
+  </body>
+</html>     
