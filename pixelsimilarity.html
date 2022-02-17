@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+  
+<body>
+<video id="video" width="0" height = "0"></video>
+
+  <canvas></canvas>
+
+ 
+   <script language="javascript" type="text/javascript">
+  
+  // the simplest possible script to say which pixel is brighest using pixels from a live webcam.
+ let mouseDown = false;    
+ let canvas = document.querySelector("canvas");
+  
+ let context = canvas.getContext('2d');
+ canvas.addEventListener('mousemove', getMouse);
+ canvas.addEventListener('mousedown', mousePressed);
+ canvas.addEventListener('mouseup', mouseReleased);
+
+     // This sets the width and height to the document window
+canvas.width = 640;
+canvas.height = 480;
+  
+     // Grab elements, create settings, etc.
+let video = document.getElementById('video');
+
+//video.style.visibility="hidden";
+
+navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+        //video.src = window.URL.createObjectURL(stream);
+	video.srcObject = stream;
+	video.play();
+});
+     
+var imageData = 0;
+let x = 0;
+let y = 0;
+let lastx = 0;
+let lasty = 0;
+let r1 = 0;
+let g1 = 0;
+let b1 = 0;
+let threshold = 5;
+let patchSize = 10;
+     
+function draw() {
+
+ 
+  context.drawImage(video,0,0,canvas.width,canvas.height);
+  
+  imageData = context.getImageData(0,0,canvas.width, canvas.height);
+    
+  if (mouseDown) {
+   
+    r1 = imageData.data[((canvas.width*mouseX)+mouseY)*4];
+   	g1 = imageData.data[((canvas.width*mouseX)+mouseY)*4+1];
+    b1 = imageData.data[((canvas.width*mouseX)+mouseY)*4+2];
+  	x=mouseX;
+    y=mouseY;
+    //console.log("rgb=" + r1 + g1 + b1);
+  }
+     
+// iterate over all pixels
+  
+for (var i = y-patchSize; i < y+patchSize; i++) {
+    // loop through each row
+	for(var j = x-patchSize; j < x+patchSize; j++) {
+             
+      		let r = imageData.data[((canvas.width * i) + j) * 4];
+            let g = imageData.data[((canvas.width * i) + j) * 4+1];
+            let b = imageData.data[((canvas.width * i) + j) * 4+2];
+
+      if (Math.abs(r-r1) < threshold && Math.abs(g-g1) < threshold && Math.abs(b - b1) < threshold) {
+       
+        x=j;
+        y=i;
+     }
+      
+    }
+}
+ console.log("x = "+ x + " y = " + y);	
+
+  
+ context.fillStyle = "red";
+ context.fillRect(x,y,20,20);
+  
+ requestAnimationFrame(draw); 
+  
+}
+     
+requestAnimationFrame(draw);
+	
+     // use setInterval instead of requestAnimationFrame if you want to slow things down
+     //setInterval(draw,1000);
+
+function getMouse(mousePosition) {
+    mouseX = mousePosition.layerX;
+    mouseY = mousePosition.layerY;
+}
+     
+function mousePressed() {
+
+  mouseDown = true;
+  
+}
+     
+function mouseReleased() {
+  
+  mouseDown = false;
+  
+}
+  
+</script>
+</body>
+</html>
