@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+  
+<body>
+<video id="video" width="0" height = "0"></video>
+
+  <canvas id="canvas1"></canvas>
+  <canvas id="canvas2"></canvas>
+
+   <script language="javascript" type="text/javascript">
+  
+  // the simplest possible script to say which pixel is brighest using pixels from a live webcam.
+ let width = 400;
+ let height = 300;
+     
+ let canvas = document.getElementById("canvas1");
+  
+ let context = canvas.getContext('2d');
+ let canvas2 = document.getElementById('canvas2');
+ let context2 = canvas2.getContext('2d'); 
+     
+ canvas.addEventListener('mousemove', getMouse, false);
+
+     // This sets the width and height to the document window
+canvas.width = width;
+canvas.height = height;
+canvas2.width = width;
+canvas2.height = height;
+  
+     // Grab elements, create settings, etc.
+let video = document.getElementById('video');
+
+video.style.visibility="hidden";
+
+navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+        //video.src = window.URL.createObjectURL(stream);
+	video.srcObject = stream;
+	video.play();
+});
+     
+var imageData = 0;
+var resultData = 0;
+var lastAvg = 0;
+     
+function draw() {
+
+ 
+  context2.drawImage(video,0,0,canvas.width,canvas.height);
+  
+  imageData = context2.getImageData(0,0,canvas.width, canvas.height);
+  resultData = context.getImageData(0,0,canvas.width,canvas.height);
+  
+
+var average = 0;
+     
+// iterate over all pixels
+for(var i = 0; i < canvas.height; i++) {
+    // loop through each row
+	for(var j = 0; j < canvas.width; j++) {
+             
+      		let r = imageData.data[((canvas.width * i) + j) * 4];
+            let g = imageData.data[((canvas.width * i) + j) * 4+1];
+            let b = imageData.data[((canvas.width * i) + j) * 4+2];
+      
+      //rgb2luma
+      let greyscale = 0.2126*r + 0.7152*g + 0.0722*b;
+      	average+=greyscale;
+      if (greyscale>lastAvg) {
+		resultData.data[((canvas.width * i) + j) * 4]=greyscale;     
+		resultData.data[((canvas.width * i) + j) * 4+1]=greyscale;
+     	resultData.data[((canvas.width * i) + j) * 4+2]=greyscale;  
+		resultData.data[((canvas.width * i) + j) * 4+3]=255;//alpha
+      } else {
+		resultData.data[((canvas.width * i) + j) * 4]=0;     
+		resultData.data[((canvas.width * i) + j) * 4+1]=0;
+     	resultData.data[((canvas.width * i) + j) * 4+2]=0;  
+		resultData.data[((canvas.width * i) + j) * 4+3]=255;//alpha   
+        
+      }
+      
+    }
+}
+	lastAvg = average/(width*height);
+  console.log("Average = " + lastAvg);
+  
+	context.putImageData(resultData,0,0); 
+	requestAnimationFrame(draw); 
+  
+}
+     
+requestAnimationFrame(draw);
+
+function getMouse(mousePosition) {
+    mouseX = mousePosition.layerX;
+    mouseY = mousePosition.layerY;
+}
+</script>
+</body>
+</html>
