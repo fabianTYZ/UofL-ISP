@@ -22,6 +22,8 @@
     <script>
       
 		let video = document.getElementById('video');
+      
+      //Hi there! Hey
 
 video.style.visibility="hidden";
 
@@ -93,10 +95,39 @@ magnitudes.data[currentPixel+2]=Math.sqrt(imageData2.data[currentPixel+2]*imageD
 magnitudes.data[currentPixel+3]=255;
             
 // Angle / directions
-directions.data[currentPixel]=Math.atan(imageData3.data[currentPixel]/imageData2.data[currentPixel])*57;
-directions.data[currentPixel+1]=Math.atan(imageData3.data[currentPixel+1]/imageData2.data[currentPixel+1])*57;
-directions.data[currentPixel+2]=Math.atan(imageData3.data[currentPixel+2]/imageData2.data[currentPixel+2])*57;
-directions.data[currentPixel+3]=255;      
+directions.data[currentPixel]=Math.atan(imageData3.data[currentPixel]/imageData2.data[currentPixel])*114.591559026;
+directions.data[currentPixel+1]=Math.atan(imageData3.data[currentPixel+1]/imageData2.data[currentPixel+1])*114.591559026;
+directions.data[currentPixel+2]=Math.atan(imageData3.data[currentPixel+2]/imageData2.data[currentPixel+2])*114.591559026;
+directions.data[currentPixel+3]=255;
+
+// compute the histogram
+if (directions.data[currentPixel]>0 && directions.data[currentPixel]<20) {
+  histogram[0]+=magnitudes.data[currentPixel];
+}
+if (directions.data[currentPixel]>21 && directions.data[currentPixel]<40) {
+  histogram[1]+=magnitudes.data[currentPixel];
+}
+if (directions.data[currentPixel]>41 && directions.data[currentPixel]<60) {
+  histogram[2]+=magnitudes.data[currentPixel];
+}
+if (directions.data[currentPixel]>61 && directions.data[currentPixel]<80) {
+  histogram[3]+=magnitudes.data[currentPixel];
+}
+if (directions.data[currentPixel]>81 && directions.data[currentPixel]<100) {
+  histogram[4]+=magnitudes.data[currentPixel];
+}
+if (directions.data[currentPixel]>101 && directions.data[currentPixel]<120) {
+  histogram[5]+=magnitudes.data[currentPixel];
+}
+if (directions.data[currentPixel]>121 && directions.data[currentPixel]<140) {
+  histogram[6]+=magnitudes.data[currentPixel];
+}   
+if (directions.data[currentPixel]>141 && directions.data[currentPixel]<160) {
+  histogram[7]+=magnitudes.data[currentPixel];
+}
+if (directions.data[currentPixel]>161 && directions.data[currentPixel]<180) {
+  histogram[8]+=magnitudes.data[currentPixel];
+}        
           }
         }
    console.log(histogram);
@@ -104,7 +135,12 @@ directions.data[currentPixel+3]=255;
        //context.putImageData(imageData2,0,0);
        // view Y gradient
        context.putImageData(directions,0,0); 
-
+   for (let i = 0; i < 9; i++) {
+    
+     context.fillStyle="red";
+     context.fillRect(i*20,250-(histogram[i]/2000),20,20)
+     
+   }
    requestAnimationFrame(draw);
  }
    requestAnimationFrame(draw);
@@ -113,4 +149,4 @@ directions.data[currentPixel+3]=255;
 
     </script>
   </body>
-</html>     
+</html>
