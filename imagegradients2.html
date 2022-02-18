@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <video id="video" width="0" height = "0"></video>
+    <canvas id="myCanvas" width="400" height="300"></canvas>
+    <canvas id="myCanvas2" width="400" height="300"></canvas>
+    <h1>Image Gradients</h1>
+    
+    <p>This code shows you how to get the gradient of an image in both X and Y.</p>
+    <p>We're using a 'kernel' of -1 0 1 in both X and Y</p>
+    <p>Then we're calculating the magnitude and phase (angle/direction)</p>
+
+    
+    <script>
+      
+		let video = document.getElementById('video');
+
+video.style.visibility="hidden";
+
+		navigator.mediaDevices.getUserMedia({ video: true 			}).then(function(stream) {
+        //video.src = window.URL.createObjectURL(stream);
+			video.srcObject = stream;
+			video.play();
+		});
+
+        var canvas = document.getElementById('myCanvas');
+        var canvas2 = document.getElementById('myCanvas2');
+
+        var context = canvas.getContext('2d');
+        var context2 = canvas2.getContext('2d');
+        var imageWidth = canvas.width;
+        var imageHeight =  canvas.height;
+   
+      
+      
+ function draw() {     
+
+        context2.drawImage(video, 0, 0,imageWidth,imageHeight);
+
+        var imageData = context2.getImageData(0, 0, imageWidth, imageHeight);
+        var data = imageData.data;
+        
+        // This will hold the X gradient
+        var imageData2 = context.getImageData(0, 0, imageWidth, imageHeight);
+        
+        // This will hold the Y gradient
+        var imageData3 = context.getImageData(0, 0, imageWidth, imageHeight);
+        var magnitudes = context.getImageData(0, 0, imageWidth, imageHeight);
+        var directions = context.getImageData(0, 0, imageWidth, imageHeight);
+
+		var histogram = [0,0,0,0,0,0,0,0,0];
+
+           // iterate over all pixels
+        for(var i = 1; i < imageHeight-1; i++) {
+            
+            // This is the row above
+            var collm1=(i-1)*imageWidth;
+            // This is the row below
+            var collp1=(i+1)*imageWidth;
+            
+          // loop through each row
+          for(var j = 1; j < imageWidth-1; j++) {
+            
+            let  currentPixel = ((imageWidth * i) + j) * 4
+ 
+ // This is the X gradient           
+            imageData2.data[((imageWidth * i) + j) * 4] = (-1*(data[((imageWidth * i) + j-1) * 4])) + (data[((imageWidth * i) + j+1) * 4]);
+            imageData2.data[((imageWidth * i) + j) * 4+1] = (-1*(data[((imageWidth * i) + j-1) * 4+1])) + (data[((imageWidth * i) + j+1) * 4]);
+            imageData2.data[((imageWidth * i) + j) * 4+2] = (-1*(data[((imageWidth * i) + j-1) * 4+2])) + (data[((imageWidth * i) + j+1) * 4]);
+            imageData2.data[((imageWidth * i) + j) * 4+3] = 255;
+            
+// This is the Y gradient
+            imageData3.data[((imageWidth * i) + j) * 4] = (-1*(data[((collm1) + j-1) * 4])) + (data[((collp1) + j+1) * 4]);
+            imageData3.data[((imageWidth * i) + j) * 4+1] = (-1*(data[((collm1) + j-1) * 4+1])) + (data[((collp1) + j+1) * 4]);
+            imageData3.data[((imageWidth * i) + j) * 4+2] = (-1*(data[((collm1) + j-1) * 4+2])) + (data[((collp1) + j+1) * 4]);
+            imageData3.data[((imageWidth * i) + j) * 4+3] = 255;
+            
+// Can you calculate the magnitude and direction vector?    
+           magnitudes.data[currentPixel]=Math.sqrt(imageData2.data[currentPixel]*imageData2.data[currentPixel]+imageData3.data[currentPixel]*imageData3.data[currentPixel]);
+
+magnitudes.data[currentPixel+1]=Math.sqrt(imageData2.data[currentPixel+1]*imageData2.data[currentPixel+1]+imageData3.data[currentPixel+1]*imageData3.data[currentPixel+1]);
+            
+magnitudes.data[currentPixel+2]=Math.sqrt(imageData2.data[currentPixel+2]*imageData2.data[currentPixel+2]+imageData3.data[currentPixel+2]*imageData3.data[currentPixel+2]); 
+
+magnitudes.data[currentPixel+3]=255;
+            
+// Angle / directions
+directions.data[currentPixel]=Math.atan(imageData3.data[currentPixel]/imageData2.data[currentPixel])*57;
+directions.data[currentPixel+1]=Math.atan(imageData3.data[currentPixel+1]/imageData2.data[currentPixel+1])*57;
+directions.data[currentPixel+2]=Math.atan(imageData3.data[currentPixel+2]/imageData2.data[currentPixel+2])*57;
+directions.data[currentPixel+3]=255;      
+          }
+        }
+   console.log(histogram);
+    // view X gradient
+       //context.putImageData(imageData2,0,0);
+       // view Y gradient
+       context.putImageData(directions,0,0); 
+
+   requestAnimationFrame(draw);
+ }
+   requestAnimationFrame(draw);
+
+
+
+    </script>
+  </body>
+</html>     
