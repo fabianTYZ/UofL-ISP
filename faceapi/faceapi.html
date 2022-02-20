@@ -1,0 +1,66 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+    <script src = "https://mimicproject.com/libs/learner.v.0.2.js"></script>
+	<script src="face-api.js"></script>
+      <table>
+        <tr>
+          <td>
+            <canvas style="display:none;"></canvas>
+    		<div id="video-container">
+       		<video onplay="onPlay(this)" id="inputVideo" autoplay muted></video>
+            </div>
+          </td>
+          <td>
+            <div id = "dataset"></div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <p id = "label-neutral">Neutral</p>
+            <p id = "label-happy">Happy</p>
+            <p id = "label-sad">Sad</p>
+            <p id = "label-angry">Angry</p>
+            <p id = "label-fearful">Fearful</p>
+            <p id = "label-disgusted">Disgusted</p>
+            <p id = "label-surprised">Surprised</p>
+          </td>
+          <td>
+            <div id = square style = "width:100px;height:100px"></div>
+          </td>
+        </tr>
+      </table>
+
+
+      <script src = "faces"></script>
+	</head>
+	<body>
+	<script>
+	  const learner = new Learner();
+      //Add GUI if you want, give id of parent element
+      learner.addGUI(document.getElementById("dataset"));
+      learner.addClassifier(3);
+      ////OUTPUT////
+      
+      //Callback for classification result
+      learner.onOutput = (output)=> {
+        updateSquare();
+      };
+      
+      const updateSquare = ()=> {
+        const sq = document.getElementById("square");
+        let colour = "red"
+        if(learner.y[0] == 1) {
+          colour = "blue"
+        }
+        if(learner.y[0] == 2) {
+          colour = "green"
+        }
+        sq.style.backgroundColor = colour;
+      }
+      updateSquare();
+      
+      </script>
+
+	</body>
+</html>
