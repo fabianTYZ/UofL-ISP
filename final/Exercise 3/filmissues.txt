@@ -1,0 +1,47 @@
+Problems with Cosmos_War_of_the_Planets.mp4
+
+x Frame Rate: 30000/1001
+x Aspect Ratio: 314:177
+x Resolution: 628x354
+x Audio Bit Rate: 317103
+
+-----------------------------------
+
+Problems with Last_man_on_earth_1964.mov
+
+x Video Format (Container): mov
+x Video Codec: prores
+x Frame Rate: 24000/1001
+x Video Bit Rate: 9285191
+x Audio Codec: pcm_s16le
+x Audio Bit Rate: 1536000
+
+-----------------------------------
+
+Problems with The_Hill_Gang_Rides_Again.mp4
+
+x Video Bit Rate: 7537730
+
+-----------------------------------
+
+Problems with Voyage_to_the_Planet_of_Prehistoric_Women.mp4
+
+x Video Codec: hevc
+x Frame Rate: 30000/1001
+x Video Bit Rate: 8038857
+x Audio Codec: mp3
+x Audio Bit Rate: 320000
+
+-----------------------------------
+
+Problems with The_Gun_and_the_Pulpit.avi
+
+x Video Format (Container): avi
+x Video Codec: rawvideo
+x Aspect Ratio: 0:1
+x Resolution: 720x404
+x Video Bit Rate: 87438878
+x Audio Codec: pcm_s16le
+x Audio Bit Rate: 1536000
+
+-----------------------------------
